@@ -1,50 +1,29 @@
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useState } from "react";
 
-function useTodos(queryObj) {
-  //   const [posts, setPosts] = useState([]);
+function useTodos() {
+//   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState("");
 
-  const query = useInfiniteQuery({
-    queryKey: ["posts", queryObj],
-    queryFn: async ({ pageParam = 1 }) => {
+  const query = useQuery({
+    queryKey: ["todos"],
+    queryFn: async () => {
       try {
-        let todos = await axios.get(
-          "https://jsonplaceholder.typicode.com/posts",
-          {
-            params: {
-              _start: (pageParam - 1) * queryObj.pageSize,
-              _limit: queryObj.pageSize,
-            },
-          }
+        const res = await axios.get(
+          "https://jsonplaceholder.typicode.com/todos"
         );
-        return todos.data;
+        // setTodos(res.data);
+        return res.data;
       } catch (err) {
         setError(err.message);
       }
     },
-    keepPreviousData: true,
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.length > 0 ? allPages.length + 1 : undefined;
-    },
   });
 
-  const { isLoading, fetchNextPage, data: posts, isFetchingNextPage } = query;
+  const { data, isLoading } = query;
 
-  // console.log(query)
-  //   console.log(query.data)
-
-  return { posts, error, isLoading, fetchNextPage, isFetchingNextPage };
+  return { data, error, isLoading };
 }
 
 export default useTodos;
-
-//   return axios
-//     .get("https://jsonplaceholder.typicode.com/posts")
-//     .then((res) => setPosts(res.data))
-//     .catch((error) => setError(error));

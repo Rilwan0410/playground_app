@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useTodos from "../hooks/useTodos";
+import usePosts from "../hooks/usePosts";
 
 interface Post {
   id: number;
@@ -10,11 +10,11 @@ interface Post {
 const PostList = () => {
   const pageSize = 10;
   const { posts, error, isLoading, fetchNextPage, isFetchingNextPage } =
-    useTodos({
+    usePosts({
       pageSize,
     });
 
-    console.log(posts)
+  console.log(posts);
 
   if (error) return <h1>{error}</h1>;
   if (isLoading) return <h1>Loading...</h1>;
