@@ -9,71 +9,95 @@ interface Post {
 }
 const PostList = () => {
   const pageSize = 10;
-  const pageArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  const [page, setPage] = useState(1);
-  const { posts, error, isLoading } = useTodos({ page, pageSize });
+  const { posts, error, isLoading, fetchNextPage, isFetchingNextPage } =
+    useTodos({
+      pageSize,
+    });
+
+    console.log(posts)
 
   if (error) return <h1>{error}</h1>;
   if (isLoading) return <h1>Loading...</h1>;
 
   return (
-    <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', height:'90vh'}}>
+    <div
+      style={
+        {
+          // display: "flex",
+          // flexDirection: "column",
+          // justifyContent: "space-between",
+          // height: "90vh",
+        }
+      }
+    >
       <ul className="list-group">
-        {posts.map((post) => (
-          <li key={post.id} className="list-group-item">
-            {post.title}
-          </li>
-        ))}
+        {posts.pages.map((page) =>
+          page.map((p) => {
+            return (
+              <li key={p.id} className="list-group-item">
+                {p.title}
+              </li>
+            );
+          })
+        )}
       </ul>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
+      <button
+        disabled={isFetchingNextPage}
+        className="btn-primary btn mt-3"
+        onClick={() => fetchNextPage()}
       >
-        <button 
-          disabled={page === 1}
-          onClick={() => setPage(page - 1)}
-          className="btn btn-primary mt-3"
-        >
-          Previous
-        </button>
-
-        {pageArray.map((p) => {
-          return (
-            <button
-              key={p}
-              onClick={(e) => {
-                setPage(Number(e.target.innerText));
-              }}
-              style={{
-                textAlign: "center",
-                display: "flex",
-                background: page === p ? "black" : "",
-                color: page === p ? "white" : "",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "30px",
-                height: "30px",
-                borderRadius: "5px",
-              }}
-            >
-              {p}
-            </button>
-          );
-        })}
-
-        <button
-          disabled={page === pageSize}
-          onClick={() => setPage(page + 1)}
-          className="btn btn-primary mt-3"
-        >
-          Next
-        </button>
-      </div>
+        {isFetchingNextPage ? "Loading..." : "Load More"}
+      </button>
     </div>
   );
 };
 
 export default PostList;
+
+// <div
+// style={{
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "space-between",
+// }}
+// >
+/* <button 
+  disabled={page === 1}
+  onClick={() => setPage(page - 1)}
+  className="btn btn-primary mt-3"
+>
+  Previous
+</button>
+
+{pageArray.map((p) => {
+  return (
+    <button
+      key={p}
+      onClick={(e) => {
+        setPage(Number(e.target.innerText));
+      }}
+      style={{
+        textAlign: "center",
+        display: "flex",
+        background: page === p ? "black" : "",
+        color: page === p ? "white" : "",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "30px",
+        height: "30px",
+        borderRadius: "5px",
+      }}
+    >
+      {p}
+    </button>
+  );
+})}
+
+<button
+  disabled={page === pageSize}
+  onClick={() => setPage(page + 1)}
+  className="btn btn-primary mt-3"
+>
+  Next
+</button>
+</div> */
